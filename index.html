@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversário! ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Nunito', sans-serif; 
+            background: linear-gradient(135deg, #ffe6e6, #ffb3ba); 
+            color: #4a4a4a; 
+            text-align: center; 
+            margin: 0; 
+            padding: 20px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        h1, h2 { 
+            font-family: 'Fredoka', sans-serif;
+            color: #ff4d6d; 
+            margin-bottom: 10px;
+        }
+
+        .container { 
+            max-width: 600px; 
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9); 
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2); 
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease-in-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hidden { display: none !important; }
+
+        .fade-in { animation: fadeIn 0.8s forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        img { 
+            max-width: 100%; 
+            border-radius: 15px; 
+            margin-top: 20px; 
+            border: 4px solid #ff4d6d; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        button { 
+            background-color: #ff4d6d; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            transition: all 0.3s; 
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        button:hover { 
+            background-color: #c9184a; 
+            transform: translateY(-3px) scale(1.05); 
+            box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6);
+        }
+
+        input { 
+            padding: 15px; 
+            font-size: 16px; 
+            width: 90%; 
+            border: 2px solid #ffb3ba; 
+            border-radius: 10px; 
+            margin-top: 15px; 
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            text-align: center;
+            transition: border 0.3s;
+        }
+
+        input:focus { border-color: #ff4d6d; }
+
+        .message { 
+            font-size: 18px; 
+            margin-top: 20px; 
+            font-style: italic; 
+            color: #555; 
+            background: #fff0f3;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ff4d6d;
+        }
+
+        .error { color: #d90429; font-weight: bold; margin-top: 10px; display: none; }
+
+        /* Estilos do Jogo da Memória */
+        .memory-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            justify-content: center;
+            margin: 20px auto;
+            max-width: 320px;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background-color: #ff4d6d;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+            color: transparent;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .memory-card.flipped {
+            background-color: #fff;
+            color: #333;
+            border: 2px solid #ff4d6d;
+            transform: rotateY(180deg);
+            cursor: default;
+        }
+
+        .memory-card.matched {
+            background-color: #ffb3ba;
+            color: #fff;
+            border: 2px solid #ffb3ba;
+            cursor: default;
+        }
+
+        /* Estilos do Jogo de Crafting (Minecraft) */
+        .crafting-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px auto;
+        }
+
+        .crafting-table {
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            gap: 5px;
+            background-color: #c68c53; 
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .craft-slot {
+            width: 70px;
+            height: 70px;
+            background-color: #8b5a2b;
+            border: 3px solid #5c3a21;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.2s;
+        }
+
+        .craft-slot:hover {
+            background-color: #a06b35;
+        }
+
+        .craft-hint {
+            font-size: 14px;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        /* Efeito de corações flutuantes no fundo */
+        .heart {
+            position: absolute;
+            color: #ffb3ba;
+            font-size: 20px;
+            animation: float 6s linear infinite;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FASE 1: INÍCIO -->
+    <div class="container fade-in" id="stage1">
+        <h1>Feliz Aniversário, Lanna! 🎉</h1>
+        <p>Preparei um pequeno joguinho para você. Sei que a vida tem sido corrida, mas você é muito importante pra mim e eu queria fazer algo especial.</p>
+        <p>Para ver sua surpresa, você precisa passar por alguns desafios.</p>
+        <button onclick="nextStage(1, 2)">Começar!</button>
+    </div>
+
+    <!-- FASE 2: STARDEW VALLEY -->
+    <div class="container hidden" id="stage2">
+        <h2>Fase 1: A Fazendinha 🌾</h2>
+        <p>Qual é o nome daquele joguinho perfeito que a gente joga? (E que serve de puxão de orelha pq precisamos jogar mais!)</p>
+        <input type="text" id="answer1" placeholder="Digite o nome do jogo...">
+        <br>
+        <button id="btn1" onclick="checkAnswer(1, ['stardew', 'valley'])">Responder</button>
+        <p id="error1" class="error">Ops, quase! Dica: começa com Star... 🌟</p>
+        
+        <div id="success1" class="hidden fade-in">
+            <img src="stardew.jpeg" alt="Nossa fotinha no Stardew Valley">
+            <p class="message">"Nunca imaginei que fosse criar e ter uma amizade tão verdadeira quanto sinto com vc..." ❤️<br><br>Acertou! A gente precisa muito jogar mais. Obrigado por sempre estar do meu lado, até mesmo capinando mato virtual!</p>
+            <button onclick="nextStage(2, 3); initMemoryGame();">Próxima fase ➡️</button>
+        </div>
+    </div>
+
+    <!-- FASE 3: PUZZLE (JOGO DA MEMÓRIA) -->
+    <div class="container hidden" id="stage3">
+        <h2>Fase 2: Conexão ✨</h2>
+        <p>Encontre os 8 pares (sem roubar ein)</p>
+        
+        <div class="memory-board" id="memoryBoard"></div>
+        
+        <div id="success2" class="hidden fade-in">
+            <p class="message">"Você é alguém incrível, ótima amiga, prestativa, amável, gentil, forte, divertida..."<br><br>Sempre que precisar de ajuda eu vou tá aqui, nem que seja pra algo bobo. Você é maravilhosa e merece conquistar todos os sonhos e objetivos que tem na sua vida!</p>
+            <button onclick="nextStage(3, 4)">Ir para a Fase 3 ➡️</button>
+        </div>
+    </div>
+
+    <!-- FASE 4: MINECRAFT (CRAFTING PUZZLE) -->
+    <div class="container hidden" id="stage4">
+        <h2>Fase 3: Hora de Craftar! ⛏️</h2>
+        <p>Já que a gente também joga Minecraft, vamos ver se você lembra das receitas! <br><strong>Monte uma Picareta de Diamante na bancada de trabalho abaixo.</strong></p>
+        <p class="craft-hint">(Dica: Clique nos quadrados para alternar entre Vazio, Diamante 💎 e Graveto 🪵)</p>
+        
+        <div class="crafting-container" id="craftingGame">
+            <div class="crafting-table">
+                <div class="craft-slot" onclick="cycleCraft(this, 0)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 1)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 2)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 3)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 4)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 5)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 6)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 7)"></div>
+                <div class="craft-slot" onclick="cycleCraft(this, 8)"></div>
+            </div>
+        </div>
+        
+        <div id="success4" class="hidden fade-in">
+            <p class="message">"De verdade espero que possa retribuir algum dia o que fez por mim, você é uma amizade importante e sempre vai ser, independente do tempo ou quantas vezes nos falamos." ❤️</p>
+            <button onclick="nextStage(4, 5)">Ir para o Desafio Final ➡️</button>
+        </div>
+    </div>
+
+    <!-- FASE 5: A FOTO DELA -->
+    <div class="container hidden" id="stage5">
+        <h2>Desafio Final 📸</h2>
+        <p>O último desafio não é uma pergunta nem um puzzle. É só para te mostrar uma coisa...</p>
+        <button id="btn5" onclick="revealFinal()">Ver a surpresa</button>
+        
+        <div id="success5" class="hidden fade-in">
+            <img src="lanna.jpeg" alt="A foto favorita">
+            <p class="message">Essa é a minha foto favorita sua, você tá incrível nela! 🥰<br><br>Como a gente é web amigo, ainda não temos uma foto lado a lado. Mas eu espero de verdade que um dia a gente possa tirar muitas fotos juntos e fazer várias coisas legais pessoalmente.</p>
+            <h2>🎉 FELIZ ANIVERSÁRIOOOOO! 🎉</h2>
+            <p>Era só isso mesmo XD</p>
+        </div>
+    </div>
+
+    <script>
+        // Efeito de corações
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 6000);
+            }, 300);
+        }
+        createHearts();
+
+        // Mudar de fase
+        function nextStage(current, next) {
+            document.getElementById('stage' + current).classList.add('hidden');
+            let nextEl = document.getElementById('stage' + next);
+            nextEl.classList.remove('hidden');
+            nextEl.classList.add('fade-in');
+        }
+
+        // Checar respostas de texto (Fase 1)
+        function checkAnswer(stage, keywords) {
+            let input = document.getElementById('answer' + stage).value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            let isCorrect = keywords.some(word => input.includes(word));
+
+            if (isCorrect) {
+                document.getElementById('success' + stage).classList.remove('hidden');
+                document.getElementById('error' + stage).style.display = 'none';
+                document.getElementById('btn' + stage).style.display = 'none';
+                document.getElementById('answer' + stage).style.display = 'none';
+            } else {
+                document.getElementById('error' + stage).style.display = 'block';
+            }
+        }
+
+        // --- JOGO DA MEMÓRIA (FASE 2) ---
+        const emojis = ['🌻', '🌻', '🚜', '🚜', '🎮', '🎮', '💖', '💖', '⛏️', '⛏️', '🐷', '🐷', '⚔️', '⚔️', '✨', '✨'];
+        let hasFlippedCard = false, lockBoard = false, firstCard, secondCard, matches = 0;
+
+        function initMemoryGame() {
+            const board = document.getElementById('memoryBoard');
+            board.innerHTML = '';
+            matches = 0;
+            emojis.sort(() => 0.5 - Math.random());
+
+            emojis.forEach(emoji => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.emoji = emoji;
+                card.innerHTML = emoji;
+                card.addEventListener('click', flipCard);
+                board.appendChild(card);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flipped');
+
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.emoji === secondCard.dataset.emoji;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+
+            matches++;
+            if (matches === 8) { // Ganhou a fase da memória
+                setTimeout(() => {
+                    document.getElementById('success2').classList.remove('hidden');
+                    document.getElementById('memoryBoard').style.display = 'none';
+                }, 500);
+            }
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+
+        // --- PUZZLE DE CRAFTING MINECRAFT (FASE 3) ---
+        const craftState = ["", "", "", "", "", "", "", "", ""];
+        const craftTarget = ["💎", "💎", "💎", "", "🪵", "", "", "🪵", ""];
+        const craftItems = ["", "💎", "🪵"];
+
+        function cycleCraft(element, index) {
+            let currentItem = craftState[index];
+            let nextIndex = (craftItems.indexOf(currentItem) + 1) % craftItems.length;
+            let nextItem = craftItems[nextIndex];
+            
+            craftState[index] = nextItem;
+            element.innerHTML = nextItem;
+
+            checkCrafting();
+        }
+
+        function checkCrafting() {
+            if (JSON.stringify(craftState) === JSON.stringify(craftTarget)) {
+                setTimeout(() => {
+                    document.getElementById('success4').classList.remove('hidden');
+                    document.getElementById('craftingGame').style.display = 'none';
+                    document.querySelector('.craft-hint').style.display = 'none';
+                }, 400);
+            }
+        }
+
+
+        // --- FOTO FINAL (FASE 4) ---
+        function revealFinal() {
+            document.getElementById('success5').classList.remove('hidden');
+            document.getElementById('btn5').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
